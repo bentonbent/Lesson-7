@@ -11,6 +11,7 @@
             fill: #fff;
             stroke: steelblue;
             stroke-width: 3px;
+            cursor:pointer;
         }
 
         .node text {
@@ -53,7 +54,11 @@
         .attr("width", width + margin.right + margin.left)
         .attr("height", height + margin.top + margin.bottom)
         .append("g")
-        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+        //THIS IS THE CODE THAT MAKES ZOOM WORK 8888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888888
+        .call(d3.behavior.zoom().on("zoom", function () {
+            svg.attr("transform", "translate(" + d3.event.translate + ")" + " scale(" + d3.event.scale + ")")
+        }));
 
     // load the external data
     d3.json("treeData.json", function (error, treeData) {
@@ -83,7 +88,7 @@
             .attr("class", "node")
             .attr("transform", function (d) {
                 return "translate(" + d.y + "," + d.x + ")";
-            });
+            });//********************************************click function
 
         nodeEnter.append("circle")
             .attr("r", 10)
@@ -113,7 +118,41 @@
             .attr("class", "link")
             .attr("d", diagonal);
 
+
+        //FAIL collapse(node);
     }
+
+    //new material
+
+
+    // Collapse the node and all it's children
+    function collapse(d) {
+        if(d.children) {
+            d._children = d.children;
+            d._children.forEach(collapse);
+            d.children = null
+        }
+    }
+
+
+    function expand(d) {
+        if (d._children) {
+            d.children = d._children;
+            d.children.forEach(expand);
+            d._children = null;
+        }
+    }
+
+
+    //  var zoomListener = d3.behavior.zoom().scaleExtent([0.1, 3]).on("zoom", zoom);
+
+    //  d3.selectAll(".node").call(d3.drag().on("start", started));
+    // Helper functions for collapsing and expanding nodes.
+
+
+
+
+
 
 </script>
 
